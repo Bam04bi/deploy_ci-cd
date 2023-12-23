@@ -1,0 +1,44 @@
+version: "3.4"
+services:
+  # Truffle service configuration
+  truffle:
+    build:
+      context: .
+      target: truffle
+    depends_on:
+      - ganache
+    networks:
+      - backend
+    volumes:
+      - .:/home/app
+      - /home/app/node_modules
+
+  # Ganache service configuration
+  ganache:
+    build:
+      context: .
+      target: ganache
+    ports:
+      - 8545:8545
+    networks:
+      - backend
+
+  # App service configuration
+  app:
+    build:
+      context: .
+      target: app
+    depends_on:
+      - ganache
+    ports:
+      - 3000:3000
+    networks:
+      - backend
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+networks:
+  # Backend network configuration
+  backend:
+    driver: "bridge"
