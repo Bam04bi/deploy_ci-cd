@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'node' // Use an image with Maven installed
-        }
-    }
+    agent any
     environment {
         DOCKER_IMAGE_NAME = "node-deploy"
         DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
