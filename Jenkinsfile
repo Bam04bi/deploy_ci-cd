@@ -9,9 +9,9 @@ pipeline {
 //                 script {
 //                    docker.image('node:10-stretch').inside { c ->
                         echo 'Building..'
-                        sh 'start /B npm i'
+                        sh 'npm install &'
                         echo 'Testing..'
-                        sh 'start /B npm test'
+                        sh 'npm test &'
 //                         sh "docker logs ${c.id}"
 //                    }
 //                 }
