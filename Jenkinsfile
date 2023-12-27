@@ -1,17 +1,24 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:20.9.0'
-            args '-p 3000:3000'
-        }
-    }
+    agent any
+
     environment {
         DOCKER_REGISTRY_URL = 'https://your-registry-url'
         DOCKER_REGISTRY_CREDENTIALS = 'DOCKER_REGISTRY_CREDENTIALS'
         DOCKER_IMAGE_NAME = 'ghm/node-demo'
         DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
     }
+
     stages {
+        stage('Pull Node.js Image') {
+            steps {
+                script {
+                    echo 'Pulling Node.js image...'
+                    // Pull the specified Node.js image
+                    sh 'docker pull node:20.9.0'
+                }
+            }
+        }
+
         stage('Build') {
             steps {
                 script {
@@ -20,6 +27,7 @@ pipeline {
                 }
             }
         }
+
         stage('Tests') {
             steps {
                 script {
@@ -28,6 +36,7 @@ pipeline {
                 }
             }
         }
+
         stage('Build and push Docker image') {
             steps {
                 script {
@@ -38,6 +47,7 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy to remote Docker host') {
             steps {
                 script {
