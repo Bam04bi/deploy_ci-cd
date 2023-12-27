@@ -15,6 +15,7 @@ pipeline {
 //                         sh "docker logs ${c.id}"
 //                    }
 //                 }
+                }
             }
         }
         stage('Build and push docker image') {
@@ -44,5 +45,4 @@ pipeline {
             }
         }
     }
-}
 }
