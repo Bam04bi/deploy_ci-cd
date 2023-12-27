@@ -1,11 +1,11 @@
 pipeline {
     agent {
         docker {
-            image 'maven:3.8.4' // Use an image with Maven installed
+            image 'node' // Use an image with Maven installed
         }
     }
     environment {
-        DOCKER_IMAGE_NAME = "springboot-deploy"
+        DOCKER_IMAGE_NAME = "node-deploy"
         DOCKER_IMAGE_TAG = "${DOCKER_IMAGE_NAME}:${BUILD_NUMBER}"
     }
     stages {
