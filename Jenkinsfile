@@ -6,39 +6,35 @@ pipeline {
     stages {
         stage('Tests') {
             steps {
-                 script {
-//                    docker.image('node:10-stretch').inside { c ->
-                        echo 'Building..'
-                        sh 'npm install'
-                        echo 'Testing..'
-                        sh 'npm test'
-//                         sh "docker logs ${c.id}"
-//                    }
-//                 }
+                script {
+                    echo 'Building..'
+                    sh 'npm install'
+                    echo 'Testing..'
+                    sh 'npm test'
                 }
             }
         }
-        stage('Build and push docker image') {
+        stage('Build and push Docker image') {
             steps {
                 script {
+                    def registryCredentials = credentials('demo-docker')
                     def dockerImage = docker.build("ghm/node-demo:main")
-                    docker.withRegistry('', 'demo-docker') {
+                    docker.withRegistry('', registryCredentials) {
                         dockerImage.push('main')
                     }
                 }
             }
         }
-        stage('Deploy to remote docker host') {
+        stage('Deploy to remote Docker host') {
             environment {
                 DOCKER_HOST_CREDENTIALS = credentials('demo-docker')
             }
             steps {
                 script {
-//                     sh 'docker login -u $DOCKER_HOST_CREDENTIALS_USR -p $DOCKER_HOST_CREDENTIALS_PSW 127.0.0.1:2375'
                     sh 'docker pull ghm/node-demo:main'
-                    sh 'docker stop node-demo'
-                    sh 'docker rm node-demo'
-                    sh 'docker rmi ghm/node-demo:current'
+                    sh 'docker stop node-demo || true'
+                    sh 'docker rm node-demo || true'
+                    sh 'docker rmi ghm/node-demo:current || true'
                     sh 'docker tag ghm/node-demo:main ghm/node-demo:current'
                     sh 'docker run -d --name node-demo -p 80:3000 ghm/node-demo:current'
                 }
