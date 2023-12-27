@@ -5,9 +5,6 @@ pipeline {
             args '-p 3000:3000'
         }
     }
-    environment {
-        DOCKER_REGISTRY_CREDENTIALS = credentials('DOCKER_REGISTRY_CREDENTIALS')
-    }
     stages {
         stage('Build') {
             steps {
