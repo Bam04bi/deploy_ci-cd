@@ -6,12 +6,12 @@ pipeline {
     stages {
         stage('Tests') {
             steps {
-//                 script {
+                 script {
 //                    docker.image('node:10-stretch').inside { c ->
                         echo 'Building..'
-                        sh 'npm install &'
+                        sh 'npm install'
                         echo 'Testing..'
-                        sh 'npm test &'
+                        sh 'npm test'
 //                         sh "docker logs ${c.id}"
 //                    }
 //                 }
