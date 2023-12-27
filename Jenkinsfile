@@ -5,6 +5,9 @@ pipeline {
             args '-p 3000:3000'
         }
     }
+    environment {
+        DOCKER_REGISTRY_CREDENTIALS = credentials('DOCKER_REGISTRY_CREDENTIALS')
+    }
     stages {
         stage('Build') {
             steps {
@@ -25,9 +28,9 @@ pipeline {
         stage('Build and push Docker image') {
             steps {
                 script {
-                    def dockerImage = docker.build("ghm/node-demo:main")
+                    def dockerImage = docker.build("ghm/node-demo:${BUILD_NUMBER}")
                     docker.withRegistry('https://your-registry-url', 'DOCKER_REGISTRY_CREDENTIALS') {
-                        dockerImage.push('main')
+                        dockerImage.push("${BUILD_NUMBER}")
                     }
                 }
             }
@@ -35,11 +38,11 @@ pipeline {
         stage('Deploy to remote Docker host') {
             steps {
                 script {
-                    sh 'docker pull ghm/node-demo:main'
+                    sh 'docker pull ghm/node-demo:${BUILD_NUMBER}'
                     sh 'docker stop node-demo || true'
                     sh 'docker rm node-demo || true'
                     sh 'docker rmi ghm/node-demo:current || true'
-                    sh 'docker tag ghm/node-demo:main ghm/node-demo:current'
+                    sh 'docker tag ghm/node-demo:${BUILD_NUMBER} ghm/node-demo:current'
                     sh 'docker run -d --name node-demo -p 80:3000 ghm/node-demo:current'
                 }
             }
