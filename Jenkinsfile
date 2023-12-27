@@ -1,30 +1,28 @@
-pipeline {
-    agent any
+node {
+    def WORKSPACE = env.WORKSPACE
+    def dockerImageName = "springboot-deploy"
+    def dockerImageTag = "${dockerImageName}:${env.BUILD_NUMBER}"
 
-    tools {
-        nodejs '20.9.0'
-    }
-
-    stages {
-        stage('preflight') {
-            steps {
-                echo sh(returnStdout: true, script: 'env')
-                sh 'node -v'
-            }
+    try {
+        stage('Clone Repo') {
+            git url: 'https://github.com/Bam04bi/deploy_ci-cd.git',
+                branch: 'main'
         }
 
-        stage('build') {
-            steps {
-                sh 'npm --version'
-                sh 'git log --reverse -1'
-                sh 'npm install'
-            }
+        stage('Build docker') {
+            dockerImage = docker.build(dockerImageTag)
         }
 
-        stage('test') {
-            steps {
-                sh 'npm test'
-            }
+        stage('Deploy docker') {
+            echo "Docker Image Tag Name: ${dockerImageTag}"
+            sh "docker stop ${dockerImageName} || true && docker rm ${dockerImageName} || true"
+            sh "docker run --name ${dockerImageName} -d -p 8081:8081 ${dockerImageTag}"
         }
+    } catch (Exception e) {
+        // Handle exceptions, log details for debugging
+        echo "Failed to execute the pipeline: ${e.message}"
+        throw e
+    } finally {
+        // Cleanup or additional steps
     }
 }
