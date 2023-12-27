@@ -12,6 +12,14 @@ pipeline {
                 }
             }
         }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Run Docker build with elevated privileges
+                    bat 'start /B docker build -t "node-deploy:3" .'
+                }
+            }
+        }
 
         stage('Build and Push Docker Image') {
             steps {
