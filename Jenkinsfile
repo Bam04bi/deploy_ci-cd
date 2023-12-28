@@ -1,5 +1,13 @@
 pipeline {
     agent any
+
+    environment {
+        DOCKER_REGISTRY_URL = 'https://hub.docker.com'
+        DOCKER_REGISTRY_CREDENTIALS = 'DOCKER_REGISTRY_CREDENTIALS'
+        DOCKER_IMAGE_NAME = 'ghm/node-demo'
+        DOCKER_IMAGE_TAG = "${BUILD_NUMBER}"
+    }
+
     stages {
         stage('Build') {
             steps {
