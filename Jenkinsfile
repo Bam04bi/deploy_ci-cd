@@ -18,7 +18,6 @@ pipeline {
                 }
             }
         }
-
         stage('Build and push Docker image') {
             steps {
                 script {
@@ -29,7 +28,6 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy to remote Docker host') {
             steps {
                 script {
