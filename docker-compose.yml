@@ -11,20 +11,11 @@ services:
     volumes:
       - .:/home/app
       - /home/app/node_modules
-  ganache:
-    build:
-      context: .
-      target: ganache
-    ports:
-      - 8545:8545
-    networks:
-      - backend
+  
   app:
     build:
       context: .
       target: app
-    depends_on:
-      - ganache
     ports:
       - 3000:3000
     networks:
