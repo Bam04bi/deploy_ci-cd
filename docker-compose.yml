@@ -1,6 +1,5 @@
 version: "3.4"
 services:
-  # Truffle service configuration
   truffle:
     build:
       context: .
@@ -12,8 +11,6 @@ services:
     volumes:
       - .:/home/app
       - /home/app/node_modules
-
-  # Ganache service configuration
   ganache:
     build:
       context: .
@@ -22,8 +19,6 @@ services:
       - 8545:8545
     networks:
       - backend
-
-  # App service configuration
   app:
     build:
       context: .
@@ -37,8 +32,9 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+    environment:
+      - ETHEREUM_RPC_URL=http://host.docker.internal:7545
 
 networks:
-  # Backend network configuration
   backend:
     driver: "bridge"
